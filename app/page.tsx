@@ -1,5 +1,7 @@
+import Image from "next/image";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import bannerImg from "@/public/banner.png";
 
 export default async function Home() {
   const supabase = await createClient();
@@ -9,19 +11,16 @@ export default async function Home() {
     .order("starts_at", { ascending: true });
 
   return (
-    <div className="mx-auto w-full max-w-5xl flex-1 px-4 py-10">
-      <div className="mb-10 border-2 border-foreground bg-brand p-6 shadow-[6px_6px_0_0_var(--foreground)]">
-        <div className="text-xs font-bold uppercase tracking-widest">
-          / upcoming
-        </div>
-        <h1 className="mt-1 font-heading text-4xl font-black uppercase leading-none tracking-tighter sm:text-5xl">
-          다가오는
-          <br />
-          이벤트
-        </h1>
-        <p className="mt-3 text-sm font-medium">
-          관심 있는 모임을 찾아 바로 RSVP →
-        </p>
+    <div className="mx-auto w-full max-w-5xl flex-1 px-4 pb-10">
+      <div className="relative mx-auto mb-6 aspect-[16/7] w-full max-w-4xl overflow-hidden">
+        <Image
+          src={bannerImg}
+          alt="다가오는 이벤트 — 관심 있는 모임을 찾아 바로 RSVP"
+          fill
+          priority
+          className="object-cover"
+          sizes="(min-width: 1024px) 896px, 100vw"
+        />
       </div>
 
       {!events || events.length === 0 ? (
