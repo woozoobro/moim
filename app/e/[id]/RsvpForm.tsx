@@ -13,14 +13,22 @@ export function RsvpForm({ eventId }: { eventId: string }) {
 
   if (state.success) {
     return (
-      <div className="rounded-lg border border-emerald-600/20 bg-emerald-50 p-4 text-sm text-emerald-900 dark:border-emerald-400/20 dark:bg-emerald-950/40 dark:text-emerald-200">
-        RSVP 완료! 이벤트 당일에 뵙겠습니다.
+      <div className="border-2 border-foreground bg-accent p-5 shadow-[3px_3px_0_0_var(--foreground)]">
+        <div className="text-xs font-bold uppercase tracking-widest">
+          ✓ confirmed
+        </div>
+        <div className="mt-1 font-heading text-lg font-black uppercase tracking-tight">
+          RSVP 완료!
+        </div>
+        <div className="mt-1 text-sm font-medium">
+          이벤트 당일에 뵙겠습니다.
+        </div>
       </div>
     );
   }
 
   return (
-    <form action={formAction} className="flex flex-col gap-3">
+    <form action={formAction} className="flex flex-col gap-4">
       <input type="hidden" name="event_id" value={eventId} />
       <div className="flex flex-col gap-2">
         <Label htmlFor="rsvp-name">이름</Label>
@@ -37,10 +45,12 @@ export function RsvpForm({ eventId }: { eventId: string }) {
         />
       </div>
       {state.error && (
-        <p className="text-sm text-destructive">{state.error}</p>
+        <div className="border-2 border-destructive bg-destructive/10 px-3 py-2 text-sm font-bold text-destructive">
+          {state.error}
+        </div>
       )}
-      <Button type="submit" size="lg" disabled={pending}>
-        {pending ? "등록 중..." : "RSVP 하기"}
+      <Button type="submit" variant="brand" size="lg" disabled={pending}>
+        {pending ? "등록 중..." : "RSVP 하기 →"}
       </Button>
     </form>
   );

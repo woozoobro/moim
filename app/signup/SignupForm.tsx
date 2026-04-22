@@ -3,13 +3,6 @@
 import Link from "next/link";
 import { useActionState } from "react";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { signup, type SignupState } from "./actions";
@@ -20,13 +13,18 @@ export function SignupForm() {
   const [state, formAction, pending] = useActionState(signup, INITIAL);
 
   return (
-    <div className="flex flex-1 items-center justify-center p-4">
-      <Card className="w-full max-w-sm">
-        <CardHeader>
-          <CardTitle>회원가입</CardTitle>
-        </CardHeader>
+    <div className="flex flex-1 items-center justify-center p-4 py-12">
+      <div className="w-full max-w-sm border-2 border-foreground bg-card shadow-[6px_6px_0_0_var(--foreground)]">
+        <div className="border-b-2 border-foreground bg-accent px-6 py-5">
+          <div className="text-xs font-bold uppercase tracking-widest">
+            / join
+          </div>
+          <div className="font-heading text-2xl font-black uppercase tracking-tighter">
+            회원가입
+          </div>
+        </div>
         <form action={formAction}>
-          <CardContent className="flex flex-col gap-4">
+          <div className="flex flex-col gap-4 px-6 py-6">
             <div className="flex flex-col gap-2">
               <Label htmlFor="email">이메일</Label>
               <Input
@@ -49,22 +47,25 @@ export function SignupForm() {
               />
             </div>
             {state.error && (
-              <p className="text-sm text-destructive">{state.error}</p>
+              <div className="border-2 border-destructive bg-destructive/10 px-3 py-2 text-sm font-bold text-destructive">
+                {state.error}
+              </div>
             )}
-          </CardContent>
-          <CardFooter className="flex-col items-stretch gap-3">
-            <Button type="submit" size="lg" disabled={pending}>
-              {pending ? "가입 중..." : "회원가입"}
+            <Button type="submit" variant="brand" size="lg" disabled={pending}>
+              {pending ? "가입 중..." : "회원가입 →"}
             </Button>
-            <p className="text-center text-sm text-muted-foreground">
+            <p className="text-center text-sm font-medium text-muted-foreground">
               이미 계정이 있으신가요?{" "}
-              <Link href="/login" className="underline underline-offset-4">
+              <Link
+                href="/login"
+                className="border-b-2 border-foreground font-bold text-foreground"
+              >
                 로그인
               </Link>
             </p>
-          </CardFooter>
+          </div>
         </form>
-      </Card>
+      </div>
     </div>
   );
 }

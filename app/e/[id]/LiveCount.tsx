@@ -34,8 +34,13 @@ export function LiveCount({
   }, [eventId]);
 
   return (
-    <span>
-      지금까지 참석 <strong className="text-foreground">{count} 명</strong>
+    <span className="inline-flex items-baseline gap-1">
+      <span className="font-heading text-lg font-black tabular-nums">
+        {count}
+      </span>
+      <span className="text-xs font-bold uppercase tracking-wide text-muted-foreground">
+        명
+      </span>
     </span>
   );
 }
