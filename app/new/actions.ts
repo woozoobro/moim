@@ -16,6 +16,7 @@ export async function createEvent(
   const startsAt = String(formData.get("starts_at") ?? "").trim();
   const description = String(formData.get("description") ?? "").trim();
   const location = String(formData.get("location") ?? "").trim();
+  const cover = formData.get("cover") as File | null;
 
   if (!title) return { error: "제목을 입력하세요." };
   if (!hostName) return { error: "주최자 이름을 입력하세요." };
@@ -28,6 +29,21 @@ export async function createEvent(
   if (!user) redirect("/login");
 
   const id = nanoid(10);
+
+  let imageUrl: string | null = null;
+  if (cover && cover.size > 0) {
+    const ext = (cover.name.split(".").pop() || "png").toLowerCase();
+    const path = `${user.id}/${id}.${ext}`;
+    const { error: upErr } = await supabase.storage
+      .from("event-covers")
+      .upload(path, cover, { contentType: cover.type });
+    if (upErr) return { error: upErr.message };
+    const {
+      data: { publicUrl },
+    } = supabase.storage.from("event-covers").getPublicUrl(path);
+    imageUrl = publicUrl;
+  }
+
   const { error } = await supabase.from("events").insert({
     id,
     owner_id: user.id,
@@ -36,6 +52,7 @@ export async function createEvent(
     starts_at: new Date(startsAt).toISOString(),
     description: description || null,
     location: location || null,
+    image_url: imageUrl,
   });
 
   if (error) return { error: error.message };

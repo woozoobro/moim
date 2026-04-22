@@ -16,7 +16,7 @@ export async function generateMetadata({
   const supabase = await createClient();
   const { data: event } = await supabase
     .from("events")
-    .select("title, description, host_name")
+    .select("title, description, host_name, image_url")
     .eq("id", id)
     .maybeSingle();
 
@@ -25,6 +25,8 @@ export async function generateMetadata({
   const description =
     event.description?.slice(0, 160) ?? `${event.host_name} 주최 · moim`;
 
+  const images = event.image_url ? [event.image_url] : undefined;
+
   return {
     title: `${event.title} · moim`,
     description,
@@ -32,11 +34,13 @@ export async function generateMetadata({
       title: event.title,
       description,
       type: "article",
+      images,
     },
     twitter: {
-      card: "summary_large_image",
+      card: event.image_url ? "summary_large_image" : "summary",
       title: event.title,
       description,
+      images,
     },
   };
 }
@@ -64,6 +68,14 @@ export default async function EventPage({ params }: { params: Params }) {
 
   return (
     <div className="mx-auto w-full max-w-2xl flex-1 px-4 py-10">
+      {event.image_url && (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={event.image_url}
+          alt={event.title}
+          className="mb-6 aspect-video w-full rounded-xl object-cover ring-1 ring-foreground/10"
+        />
+      )}
       <div className="mb-6 flex flex-col gap-3">
         <h1 className="font-heading text-3xl font-semibold tracking-tight">
           {event.title}

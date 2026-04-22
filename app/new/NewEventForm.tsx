@@ -49,6 +49,16 @@ export function NewEventForm() {
               <Input id="location" name="location" />
             </div>
             <div className="flex flex-col gap-2">
+              <Label htmlFor="cover">커버 이미지 (선택)</Label>
+              <Input
+                id="cover"
+                name="cover"
+                type="file"
+                accept="image/*"
+                className="cursor-pointer"
+              />
+            </div>
+            <div className="flex flex-col gap-2">
               <Label htmlFor="description">소개 (선택)</Label>
               <Textarea id="description" name="description" rows={4} />
             </div>
