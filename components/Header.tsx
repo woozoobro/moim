@@ -18,7 +18,30 @@ export async function Header() {
         <nav className="flex items-center gap-2">
           {user ? (
             <>
-              <span className="text-sm text-muted-foreground">
+              <Button
+                render={<Link href="/" />}
+                nativeButton={false}
+                variant="ghost"
+                size="sm"
+              >
+                둘러보기
+              </Button>
+              <Button
+                render={<Link href="/my" />}
+                nativeButton={false}
+                variant="ghost"
+                size="sm"
+              >
+                내 이벤트
+              </Button>
+              <Button
+                render={<Link href="/new" />}
+                nativeButton={false}
+                size="sm"
+              >
+                새 이벤트
+              </Button>
+              <span className="hidden text-sm text-muted-foreground sm:inline">
                 {user.email}
               </span>
               <form action={logout}>

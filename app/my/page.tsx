@@ -1,27 +1,38 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/server";
 
-export default async function Home() {
+export default async function MyEventsPage() {
   const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) redirect("/login");
+
   const { data: events } = await supabase
     .from("events")
     .select("id, title, host_name, starts_at, location")
+    .eq("owner_id", user.id)
     .order("starts_at", { ascending: true });
 
   return (
     <div className="mx-auto w-full max-w-3xl flex-1 px-4 py-10">
-      <h1 className="mb-2 font-heading text-3xl font-semibold tracking-tight">
-        다가오는 이벤트
-      </h1>
-      <p className="mb-6 text-sm text-muted-foreground">
-        관심 있는 모임을 찾아보세요.
-      </p>
+      <div className="mb-6 flex items-center justify-between">
+        <h1 className="font-heading text-2xl font-semibold tracking-tight">
+          내 이벤트
+        </h1>
+        <Button render={<Link href="/new" />} nativeButton={false} size="sm">
+          새 이벤트
+        </Button>
+      </div>
 
       {!events || events.length === 0 ? (
         <Card>
           <CardContent className="py-10 text-center text-muted-foreground">
-            아직 등록된 이벤트가 없어요.{" "}
+            아직 만든 이벤트가 없어요.{" "}
             <Link href="/new" className="underline underline-offset-4">
               첫 이벤트 만들기
             </Link>
