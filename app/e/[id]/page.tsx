@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/server";
+import { AttendeeList, type Attendee } from "./AttendeeList";
 import { LiveCount } from "./LiveCount";
 import { RsvpForm } from "./RsvpForm";
 
@@ -51,7 +54,7 @@ export default async function EventPage({ params }: { params: Params }) {
   const { data: event } = await supabase
     .from("events")
     .select(
-      "id, title, description, starts_at, location, host_name, image_url"
+      "id, owner_id, title, description, starts_at, location, host_name, image_url"
     )
     .eq("id", id)
     .maybeSingle();
@@ -65,10 +68,40 @@ export default async function EventPage({ params }: { params: Params }) {
 
   const initialCount = count ?? 0;
 
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const isOwner = user?.id === event.owner_id;
+
+  let initialAttendees: Attendee[] = [];
+  if (isOwner) {
+    const { data } = await supabase
+      .from("rsvps")
+      .select("id, name, email, created_at")
+      .eq("event_id", id)
+      .order("created_at", { ascending: false });
+    initialAttendees = data ?? [];
+  }
+
   const { date, time, dday } = formatParts(event.starts_at);
 
   return (
     <div className="mx-auto w-full max-w-3xl flex-1 px-4 py-10">
+      {isOwner && (
+        <div className="mb-4 flex items-center justify-between border-2 border-foreground bg-accent px-4 py-3 shadow-[3px_3px_0_0_var(--foreground)]">
+          <div className="text-xs font-bold uppercase tracking-widest">
+            / owner · 이 이벤트를 직접 관리할 수 있어요
+          </div>
+          <Button
+            render={<Link href={`/e/${event.id}/edit`} />}
+            nativeButton={false}
+            variant="outline"
+            size="sm"
+          >
+            수정 · 삭제
+          </Button>
+        </div>
+      )}
       <div className="border-2 border-foreground bg-card shadow-[6px_6px_0_0_var(--foreground)]">
         <div className="relative aspect-[16/9] w-full overflow-hidden border-b-2 border-foreground bg-muted">
           {event.image_url ? (
@@ -140,6 +173,13 @@ export default async function EventPage({ params }: { params: Params }) {
           <RsvpForm eventId={event.id} />
         </div>
       </div>
+
+      {isOwner && (
+        <AttendeeList
+          eventId={event.id}
+          initialAttendees={initialAttendees}
+        />
+      )}
     </div>
   );
 }

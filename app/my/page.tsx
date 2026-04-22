@@ -73,50 +73,61 @@ type EventItem = {
 function MyEventRow({ event }: { event: EventItem }) {
   const { date, time, dday } = formatParts(event.starts_at);
   return (
-    <Link
-      href={`/e/${event.id}`}
-      className="group flex items-stretch gap-0 border-2 border-foreground bg-card shadow-[4px_4px_0_0_var(--foreground)] transition-all hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-[6px_6px_0_0_var(--foreground)]"
-    >
-      <div className="relative aspect-square w-24 shrink-0 overflow-hidden border-r-2 border-foreground bg-muted sm:w-32">
-        {event.image_url ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={event.image_url}
-            alt={event.title}
-            className="h-full w-full object-cover"
-          />
-        ) : (
-          <div className="flex h-full w-full items-center justify-center bg-accent">
-            <span className="font-heading text-xl font-black uppercase tracking-tighter opacity-60">
-              moim
-            </span>
-          </div>
-        )}
-      </div>
-      <div className="flex flex-1 flex-col justify-between gap-2 p-4">
-        <div className="flex flex-col gap-1">
-          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-muted-foreground">
-            <span className="border-2 border-foreground bg-background px-1.5 py-0.5 text-[10px] text-foreground">
-              {dday}
-            </span>
-            <span>{date}</span>
-            <span>·</span>
-            <span>{time}</span>
-          </div>
-          <div className="font-heading text-lg font-extrabold leading-tight">
-            {event.title}
-          </div>
-          {event.location && (
-            <div className="text-xs font-medium text-muted-foreground">
-              📍 {event.location}
+    <div className="group flex items-stretch border-2 border-foreground bg-card shadow-[4px_4px_0_0_var(--foreground)] transition-all hover:-translate-x-[1px] hover:-translate-y-[1px] hover:shadow-[5px_5px_0_0_var(--foreground)]">
+      <Link
+        href={`/e/${event.id}`}
+        className="flex flex-1 items-stretch gap-0"
+      >
+        <div className="relative aspect-square w-24 shrink-0 overflow-hidden border-r-2 border-foreground bg-muted sm:w-32">
+          {event.image_url ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={event.image_url}
+              alt={event.title}
+              className="h-full w-full object-cover"
+            />
+          ) : (
+            <div className="flex h-full w-full items-center justify-center bg-accent">
+              <span className="font-heading text-xl font-black uppercase tracking-tighter opacity-60">
+                moim
+              </span>
             </div>
           )}
         </div>
-        <div className="text-xs font-bold uppercase tracking-wide text-muted-foreground">
-          by {event.host_name}
+        <div className="flex flex-1 flex-col justify-between gap-2 p-4">
+          <div className="flex flex-col gap-1">
+            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-muted-foreground">
+              <span className="border-2 border-foreground bg-background px-1.5 py-0.5 text-[10px] text-foreground">
+                {dday}
+              </span>
+              <span>{date}</span>
+              <span>·</span>
+              <span>{time}</span>
+            </div>
+            <div className="font-heading text-lg font-extrabold leading-tight">
+              {event.title}
+            </div>
+            {event.location && (
+              <div className="text-xs font-medium text-muted-foreground">
+                📍 {event.location}
+              </div>
+            )}
+          </div>
+          <div className="text-xs font-bold uppercase tracking-wide text-muted-foreground">
+            by {event.host_name}
+          </div>
         </div>
+      </Link>
+      <div className="flex shrink-0 items-center justify-center border-l-2 border-foreground bg-muted px-3">
+        <Link
+          href={`/e/${event.id}/edit`}
+          className="font-heading text-xs font-black uppercase tracking-tight transition-colors hover:text-brand"
+          aria-label={`${event.title} 수정`}
+        >
+          수정
+        </Link>
       </div>
-    </Link>
+    </div>
   );
 }
 
